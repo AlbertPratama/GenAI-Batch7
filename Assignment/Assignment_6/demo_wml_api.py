@@ -25,7 +25,8 @@ from ibm_watson_machine_learning.metanames import GenTextParamsMetaNames as GenP
 from ibm_watson_machine_learning.foundation_models.utils.enums import ModelTypes, DecodingMethods
 
 # For invocation of LLM with REST API
-import requests, json
+import requests
+import json
 from ibm_cloud_sdk_core import IAMTokenManager
 
 # Important: hardcoding the API key in Python code is not a best practice. We are using
@@ -40,6 +41,7 @@ watsonx_project_id = ""
 # Replace with your IBM Cloud key
 api_key = ""
 
+
 def get_credentials():
 
     load_dotenv()
@@ -47,6 +49,7 @@ def get_credentials():
     # Update the global variables that will be used for authentication in another function
     globals()["api_key"] = os.getenv("api_key", None)
     globals()["watsonx_project_id"] = os.getenv("project_id", None)
+
 
 # The get_model function creates an LLM model object with the specified parameters
 def get_model(model_type,max_tokens,min_tokens,decoding,temperature):
@@ -93,10 +96,10 @@ def get_list_of_complaints():
                         decoding=decoding, temperature=temperature)
 
     complaint = f"""
-            I just tried to book a flight on your incredibly slow website.  All 
-            the times and prices were confusing.  I liked being able to compare 
-            the amenities in economy with business class side by side.  But I 
-            never got to reserve a seat because I didn't understand the seat map.  
+            I just tried to book a flight on your incredibly slow website.  All
+            the times and prices were confusing.  I liked being able to compare
+            the amenities in economy with business class side by side.  But I
+            never got to reserve a seat because I didn't understand the seat map.
             Next time, I'll use a travel agent!
             """
 
@@ -104,8 +107,8 @@ def get_list_of_complaints():
     # understanding
 
     prompt_get_complaints = f"""
-    From the following customer complaint, extract 3 factors that caused the customer to be unhappy. 
-    Put each factor on a new line. 
+    From the following customer complaint, extract 3 factors that caused the customer to be unhappy.
+    Put each factor on a new line.
 
     Customer complaint:{complaint}
 
@@ -120,7 +123,7 @@ def get_list_of_complaints():
     # We recommmend that you put a breakpoint on this line and example the result object
     print("---------------------------------------------------------------------------")
     print("Prompt: " + prompt_get_complaints)
-    print("List of complaints: " + generated_response['results'][0]['z`'])
+    print("List of complaints: " + generated_response['results'][0]['generated_text'])
     print("---------------------------------------------------------------------------")
 
 def answer_questions():
@@ -212,3 +215,5 @@ def demo_LLM_invocation():
     invoke_with_REST()
 
 demo_LLM_invocation()
+# print(get_auth_token())
+# print(api_key)

@@ -37,24 +37,27 @@ watsonx_project_id = ""
 # Replace with your IBM Cloud key
 api_key = ""
 
+
 def get_credentials():
 
     load_dotenv()
 
     # Update the global variables that will be used for authentication in another function
-    globals()["api_key"] = os.getenv("api_key", None)
-    globals()["watsonx_project_id"] = os.getenv("project_id", None)
+    globals()["api_key"] = st.secrets["api_key"]
+    globals()["watsonx_project_id"] = st.secrets["project_id"]
 
     print("*** Got credentials***")
 
 # The get_model function creates an LLM model object with the specified parameters
-def get_model(model_type,max_tokens,min_tokens,decoding,stop_sequences):
+
+
+def get_model(model_type, max_tokens, min_tokens, decoding, stop_sequences):
 
     generate_params = {
         GenParams.MAX_NEW_TOKENS: max_tokens,
         GenParams.MIN_NEW_TOKENS: min_tokens,
         GenParams.DECODING_METHOD: decoding,
-        GenParams.STOP_SEQUENCES:stop_sequences
+        GenParams.STOP_SEQUENCES: stop_sequences
     }
 
     model = Model(
@@ -65,9 +68,10 @@ def get_model(model_type,max_tokens,min_tokens,decoding,stop_sequences):
             "url": url
         },
         project_id=watsonx_project_id
-        )
+    )
 
     return model
+
 
 def get_prompt(question):
 
@@ -85,6 +89,7 @@ def get_prompt(question):
 
     return final_prompt
 
+
 def answer_questions():
 
     # Set the api key and project id global variables
@@ -95,8 +100,8 @@ def answer_questions():
     user_question = st.text_input('Ask a question, for example: What is IBM?')
 
     # If the quesiton is blank, let's prevent LLM from showing a random fact, so we will ask a question
-    if len(user_question.strip())==0:
-        user_question="What is IBM?"
+    if len(user_question.strip()) == 0:
+        user_question = "What is IBM?"
 
     # Get the prompt
     final_prompt = get_prompt(user_question)
@@ -113,7 +118,8 @@ def answer_questions():
     stop_sequences = ['.']
 
     # Get the model
-    model = get_model(model_type, max_tokens, min_tokens, decoding,stop_sequences)
+    model = get_model(model_type, max_tokens, min_tokens,
+                      decoding, stop_sequences)
 
     # Generate response
     generated_response = model.generate(prompt=final_prompt)
@@ -127,6 +133,7 @@ def answer_questions():
         *{model_output}*</i>
         """
     st.markdown(formatted_output, unsafe_allow_html=True)
+
 
 # Invoke the main function
 answer_questions()
